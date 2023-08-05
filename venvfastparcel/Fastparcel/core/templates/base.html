@@ -51,5 +51,27 @@
 <footer class="text-center mt-5 mb-5">
     &copy; Fast Parcel 2021 by IsuruRajapaksa
 </footer>
+
+<script src="https://unpkg.com/bootoast@1.0.1/dist/bootoast.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/bootoast/dist/bootoast.min.css" />
+
+<script>
+  function toast(message, type){
+    bootoast.toast({
+      position:'leftbottom',
+      message,
+      type,
+    });
+  }
+
+</script>
+{% if messages %}
+    {% for message in messages %}
+      toast('{{ message }}', '{{ message.tags }}');
+    {% endfor %}
+  {% endif %}
+
+
+
 </body>
 </html>
