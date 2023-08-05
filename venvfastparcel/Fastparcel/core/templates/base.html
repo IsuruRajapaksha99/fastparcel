@@ -55,23 +55,24 @@
 <script src="https://unpkg.com/bootoast@1.0.1/dist/bootoast.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/bootoast/dist/bootoast.min.css" />
 
+{% if messages %}
+  {% for message in messages %}
+  <script>
+    toast("{{ message }}", "{{ message.tags }}");
+  </script>
+  {% endfor %}
+{% endif %}
+
 <script>
   function toast(message, type){
     bootoast.toast({
       position:'leftbottom',
-      message,
-      type,
+      message : message,
+      type : 'success',
     });
   }
 
 </script>
-{% if messages %}
-    {% for message in messages %}
-      toast('{{ message }}', '{{ message.tags }}');
-    {% endfor %}
-  {% endif %}
-
-
 
 </body>
 </html>
