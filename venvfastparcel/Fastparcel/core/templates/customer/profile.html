@@ -1,6 +1,34 @@
 {% extends 'customer/base.html' %}
 {% load bootstrap4 %}
+
+{% block head %}
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+  
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB0oo_8Xi8ZrZC9CeJYxKseuMehxCmyVBg",
+    authDomain: "fastparcel-7633c.firebaseapp.com",
+    projectId: "fastparcel-7633c",
+    storageBucket: "fastparcel-7633c.appspot.com",
+    messagingSenderId: "633803018776",
+    appId: "1:633803018776:web:6078857b656b495a5e696d"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
+{% endblock %}
+
 {% block main %}
+
+<!-- Basic information-->
 <b class="text-secondary">Basic Information</b></br>
 <div class="card-body">
     <form method="post" enctype="multipart/form-data">
@@ -12,6 +40,7 @@
     </form>
 </div>
 
+<!-- Change Password-->
 <b class="text-secondary"> Change Password </b></br>
 <div class="card-body">
     <form method="post" enctype="multipart/form-data">
@@ -22,4 +51,82 @@
     </form>
 </div>
 
+<!-- Phone number -->
+<b class="text-secondary"> Phone Number </b></br>
+<div class="card-body">
+
+    <div id="recaptcha-container"></div>
+
+    <div id="get-code" class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Your phone number">
+        <div class="input-group-append">
+          <button class="btn btn-warning" type="button">Send code</button>
+        </div>
+    </div>
+
+    <div id="verify-code" class="input-group mb-3 d-none">
+        <input type="text" class="form-control" placeholder="verification code">
+        <div class="input-group-append">
+          <button class="btn btn-warning" type="button"> Verify Code </button>
+        </div>
+      </div>
+  
+</div>
+
+<script>
+  import { getAuth, RecaptchaVerifier } from "firebase/auth";
+  window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {});
+  import { getAuth, signInWithPhoneNumber } from "firebase/auth";
+  
+  $("#get-code button").on('click', function(){
+    const phoneNumber = $("#get-code input").val();
+    console.log(phoneNumber);
+
+    const auth = getAuth();
+
+    const appVerifier = window.recaptchaVerifier;
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+    .then((confirmationResult) => {
+      // SMS sent. Prompt user to type the code from the message, then sign the
+      // user in with confirmationResult.confirm(code).
+      console.log(confirmationResult);
+      window.confirmationResult = confirmationResult;
+
+    $("#get-code").addClass("d-none");
+    $("#verify-code").removeClass("d-none");
+      // ...
+    }).catch((error) => {
+      // Error; SMS not sent
+      toast(error.message, 'error');
+    });
+
+    
+
+
+  });
+
+  $("#verify-code button").on('click', function(){
+    const code = $("#verify-code input").val();
+    console.log(code);
+
+    confirmationResult.confirm(code).then((result) => {
+      // User signed in successfully.
+        const user = result.user;
+        console.log(user.phoneNumber);
+
+        user.getIdtoken().then(function(idToken){
+          console.log(idToken);
+        });
+      // ...
+    }).catch((error) => {
+      // User couldn't sign in (bad verification code?)
+      toast(error.message, 'error');
+
+    });
+
+  });
+  
+</script>
+
 {% endblock %}
+``` 
